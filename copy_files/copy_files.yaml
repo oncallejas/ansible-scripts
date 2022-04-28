@@ -1,0 +1,16 @@
+---
+- hosts: windows
+  tasks:
+    - name: Create tmp directory
+      win_file:
+        path: C:\tmp\files
+        state: directory
+    - name: Download new file
+      win_get_url:
+        url: https://packages.devops-site.com/files/file.txt
+        dest: C:\tmp\files\file.txt
+    - name: Copy a file and make a backup
+      win_copy:
+        src: C:\tmp\files\file.txt
+        dest: C:\Users\administrator\Documents\file.txt
+        remote_src: yes

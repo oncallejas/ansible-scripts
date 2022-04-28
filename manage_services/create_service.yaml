@@ -1,0 +1,7 @@
+---
+- hosts: windows
+  tasks:
+  - name: Crear servicio nuevo
+  win_service:
+    name: Nuevo servicio
+    path: C:\servicios\servicio.exe

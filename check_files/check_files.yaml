@@ -1,0 +1,29 @@
+---
+- hosts: windows
+  tasks:
+    - name: Descargar nuevo archivo
+      win_get_url:
+        url: https://packages.devops-site.com/files/file.txt
+        dest: C:\tmp\files\file.txt
+
+    - name: Obtener SHA1 del nuevo archivo
+      win_stat:
+        path: C:\tmp\files\file.txt
+        checksum_algorithm: sha1
+        get_checksum: yes
+      register: new_file
+
+    - name: Obtener SHA1 del archivo viejo
+      win_stat:
+        path: C:\Users\administrator\Documents\file.txt
+        checksum_algorithm: sha1
+        get_checksum: yes
+      register: old_file
+      
+    - name: Hacer backup de archivo viejo y reemplazarlo si los SHA1 son distintos
+      win_copy:
+        src: C:\tmp\files\file.txt
+        dest: C:\Users\administrator\Documents\file.txt
+        backup: yes
+        remote_src: yes
+      when: new_file != old_file

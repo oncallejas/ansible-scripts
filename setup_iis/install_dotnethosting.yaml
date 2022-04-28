@@ -1,0 +1,30 @@
+---
+- hosts: windows
+  tasks:
+    - name: Enable IIS
+      win_feature:
+        name: Web-Server
+        state: present
+        include_management_tools: true
+      register: win_feature
+    - name: Reboot if requires
+      win_reboot:
+      when: win_feature.reboot_required
+    - name: Create tmp directory
+      win_file:
+        path: C:\tmp\dotnet
+        state: directory
+    - name: Download Net Core 6 hosting
+      win_get_url:
+        url: https://packages.devops-site.com/netCore/dotnetHosting604.zip
+        dest: C:\tmp\dotnet\dotnetHosting604.zip
+    - name: Unzip Microsoft .Net Core Hosting 6.0.4
+      win_unzip:
+        src: C:\tmp\dotnet\dotnetHosting604.zip
+        dest: C:\tmp\dotnet
+        rm: true
+    - name: Run Microsoft .Net Core Hosting 6.0.4
+      raw: C:\tmp\dotnet\dotnetHosting604.exe /q /norestart /log C:\tmp\dotnet\log.txt /x86 /x64 /redist
+      register: dotnet_install
+    - name: Reboot required by Microsoft .Net Core Hosting 6.0.4 installe
+      win_reboot:

@@ -1,0 +1,8 @@
+---
+- hosts: windows
+  tasks:
+  - name: Poner servicio en inicio automatico e iniciarlo
+  ansible.windows.win_service:
+    name: servicio
+    start_mode: auto
+    state: started
